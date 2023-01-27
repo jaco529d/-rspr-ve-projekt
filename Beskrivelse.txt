@@ -1,7 +1,12 @@
-Mikrobit-dyst
+Mikrobit-dyst 
 
-mikrobit der kommunikere over bluetooth/radio
+Gruppe: Jacob Utoft Sørensen
+
+Beskrivelse:
+Mikrobit der kommunikere med hinanden over bluetooth/radio
 
 minigames:
 - hurtig reaktion
 - tegn en form
+- tower builder
+- spam på knap flest mulige gange
