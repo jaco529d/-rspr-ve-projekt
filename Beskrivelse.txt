@@ -1,0 +1,7 @@
+Mikrobit-dyst
+
+mikrobit der kommunikere over bluetooth/radio
+
+minigames:
+- hurtig reaktion
+- tegn en form
