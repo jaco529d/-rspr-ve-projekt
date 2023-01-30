@@ -1,5 +1,6 @@
 from microbit import *
 import radio
+from tower import *
 
 radio.config(group=111)
 radio.on()
@@ -12,7 +13,7 @@ display.show(Image('99999:'
                    '99999:'))
 
 sleep(1000)
-display.clear
+display.clear()
 
 while True:
     if button_a.was_pressed():
@@ -22,6 +23,8 @@ while True:
         display.clear()
         radio.send('L')
     
+    
+    #--Radio Control--#
     message = radio.receive()
     if message:
         display.scroll(message)
