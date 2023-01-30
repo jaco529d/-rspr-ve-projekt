@@ -23,7 +23,9 @@ while True:
         display.clear()
         radio.send('L')
     
-    
+    #--Tower game--#
+    towerGame(display)
+
     #--Radio Control--#
     message = radio.receive()
     if message:
