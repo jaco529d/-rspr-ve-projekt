@@ -21,17 +21,23 @@ while True:
                            '99999:'
                            '99999:'
                            '99999'))
-        radio.send('W')
+        
         sleep(1000)
+        
+        #--Tower game--#
         towerGame(display, button_a, button_b)
     if button_b.was_pressed():
         display.clear()
-        radio.send('L')
+        
     
-    #--Tower game--#
+
     
 
     #--Radio Control--#
+    '''
+    radio.send('W')
+    radio.send('L')
     message = radio.receive()
     if message:
         display.scroll(message)
+    '''
