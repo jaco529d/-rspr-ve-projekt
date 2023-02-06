@@ -5,6 +5,25 @@ import radio
 radio.config(group=111)
 radio.on()
 
+def dropedBesides(x_pos, display):
+    tick = 30
+    running = True
+    while running == True:
+        display.clear()
+        if tick > 20:
+            display.set_pixel(x_pos, 2, 9)
+        elif tick > 10:
+            display.set_pixel(x_pos, 3, 9)
+        elif tick > 0:
+            display.set_pixel(x_pos, 4, 9)
+        
+        tick -= 1
+
+        if tick < 0:
+            running = False
+
+        sleep(50)
+
 def towerGame(display, button_a, button_b):
     state = 'game'
     
@@ -13,22 +32,30 @@ def towerGame(display, button_a, button_b):
     height = 0
     xdir = 'right'
     x_speed = 0.1
+    dropedOnTop = 0
     while running:
         if state == 'game':
             display.clear()
             if button_b.was_pressed():
                 running = False
 
-            #color new pixel
-            display.set_pixel(int(xpos),2,9)
-            display.set_pixel(2,3,9)
-            display.set_pixel(2,4,9)
+            #color pixels
+            display.set_pixel(int(xpos),1,9)
+            display.set_pixel(2,3,5)
+            display.set_pixel(2,4,5)
             
+            #droped animation
+            dropedOnTop -= 1
+            if dropedOnTop > 10:
+                display.set_pixel(2,2,9)
+            elif dropedOnTop > 0:
+                display.set_pixel(2,3,9)
+
             #pixel pos
             if xdir == 'right':
-                xpos = xpos + x_speed
+                xpos += x_speed
             elif xdir == 'left':
-                xpos = xpos - x_speed
+                xpos -= x_speed
 
             if xpos > 4.5:
                 xdir = 'left'
@@ -38,14 +65,16 @@ def towerGame(display, button_a, button_b):
             #tower stacking-logic
             if button_a.was_pressed():
                 if int(xpos) == 2:
-                    height = height + 1
+                    height += 1
                     #music.play(['a',])
                     print(height)
-                    x_speed = x_speed + 0.05
+                    x_speed += 0.01
+                    dropedOnTop = 20
                 else:
+                    dropedBesides(xpos, display)
                     state = 'end'
                     display.scroll('L')
-            
+
             sleep(50)
 
         if state == 'end':
