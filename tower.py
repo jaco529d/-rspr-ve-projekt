@@ -11,11 +11,11 @@ def dropedBesides(x_pos, display):
     while running == True:
         display.clear()
         if tick > 20:
-            display.set_pixel(x_pos, 2, 9)
+            display.set_pixel(int(x_pos), 2, 9)
         elif tick > 10:
-            display.set_pixel(x_pos, 3, 9)
+            display.set_pixel(int(x_pos), 3, 9)
         elif tick > 0:
-            display.set_pixel(x_pos, 4, 9)
+            display.set_pixel(int(x_pos), 4, 9)
         
         tick -= 1
 
@@ -25,7 +25,8 @@ def dropedBesides(x_pos, display):
         sleep(50)
 
 def towerGame(display, button_a, button_b):
-    state = 'game'
+    state = 'load'
+    player = ''
     
     running = True
     xpos = 0
@@ -34,13 +35,53 @@ def towerGame(display, button_a, button_b):
     x_speed = 0.1
     dropedOnTop = 0
     while running:
+        if state == 'load':
+            choosing = True
+            display.clear()
+            while choosing:
+                display.scroll('P1')
+                sleep(500)
+                if button_a.was_pressed():
+                    player = 'P1'
+                    choosing = False
+                    break
+                
+                display.scroll('P2')
+                sleep(500)
+                if button_a.was_pressed():
+                    player = 'P2'
+                    choosing = False
+            
+            if player == 'P1':
+                loading = True
+                while loading:
+                    message = radio.receive()
+                    if message == 'P2':
+                        for i in range(20):
+                            radio.send('start')
+                        state == 'game'
+                        loading = False
+            
+            if player == 'P2':
+                loading = True
+                while loading:
+                    radio.send('P2')
+                    message = radio.receive()
+                    print(message)
+                    if message == 'start':
+                        state == 'game'
+                        loading = False
+            
+            state = 'game'
+
         if state == 'game':
             display.clear()
             if button_b.was_pressed():
                 running = False
 
             #color pixels
-            display.set_pixel(int(xpos),1,9)
+            if dropedOnTop < 1:
+                display.set_pixel(int(xpos),1,9)
             display.set_pixel(2,3,5)
             display.set_pixel(2,4,5)
             
@@ -52,9 +93,9 @@ def towerGame(display, button_a, button_b):
                 display.set_pixel(2,3,9)
 
             #pixel pos
-            if xdir == 'right':
+            if xdir == 'right' and dropedOnTop < 1:
                 xpos += x_speed
-            elif xdir == 'left':
+            elif xdir == 'left' and dropedOnTop < 1:
                 xpos -= x_speed
 
             if xpos > 4.5:
@@ -78,7 +119,30 @@ def towerGame(display, button_a, button_b):
             sleep(50)
 
         if state == 'end':
-            print('lost')
+            if player == 'P1':
+                try:
+                    message = int(radio.receive())
+                    if height == message:
+                        display.scroll('Draw')
+                        radio.send('Draw')
+                    elif height > message:
+                        display.scroll('Won')
+                        radio.send('Lost')
+                    elif height < message:
+                        display.scroll('Lost')
+                        radio.send('Won')
+                except:
+                    display.scroll('wait..')
+
+            if player == 'P2':
+                radio.send(str(height))
+                try:
+                    message = radio.receive()
+                    display.scroll(message)
+                except:
+                    display.scroll('wait..')
+
+            '''
             radio.send(str(height))
             #--Radio--#
             try:
@@ -91,9 +155,17 @@ def towerGame(display, button_a, button_b):
                     display.scroll('Lost')
             except:
                 display.scroll('wait..')
-            
+            '''
+
             if button_b.was_pressed():
                 running = False
             
             if button_a.was_pressed():
-                state = 'game'
+                state = 'load'
+    
+    display.show(Image('99999:'
+                           '99999:'
+                           '99999:'
+                           '99999:'
+                           '99999'))
+    sleep(1000)
