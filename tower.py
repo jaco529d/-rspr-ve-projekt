@@ -27,6 +27,8 @@ def dropedBesides(x_pos, display):
 def towerGame(display, button_a, button_b):
     state = 'load'
     player = ''
+    result = ''
+    host_message = ''
     
     running = True
     xpos = 0
@@ -36,6 +38,9 @@ def towerGame(display, button_a, button_b):
     dropedOnTop = 0
     while running:
         if state == 'load':
+            if button_b.was_pressed():
+                running = False
+
             choosing = True
             display.clear()
             while choosing:
@@ -55,8 +60,8 @@ def towerGame(display, button_a, button_b):
             if player == 'P1':
                 loading = True
                 while loading:
-                    message = radio.receive()
-                    if message == 'P2':
+                    loadMessage = radio.receive()
+                    if loadMessage == 'P2':
                         for i in range(20):
                             radio.send('start')
                         state == 'game'
@@ -66,9 +71,9 @@ def towerGame(display, button_a, button_b):
                 loading = True
                 while loading:
                     radio.send('P2')
-                    message = radio.receive()
-                    print(message)
-                    if message == 'start':
+                    loadMessage = radio.receive()
+                    print(loadMessage)
+                    if loadMessage == 'start':
                         state == 'game'
                         loading = False
             
@@ -113,26 +118,71 @@ def towerGame(display, button_a, button_b):
                     dropedOnTop = 20
                 else:
                     dropedBesides(xpos, display)
-                    state = 'end'
+                    state = 'endCom'
                     display.scroll('L')
 
             sleep(50)
 
+        if state == 'endCom':
+            print('endcom')
+            display.show(Image('99999:'
+                               '99999:'
+                               '99999:'
+                               '99999:'
+                               '99999'))
+            
+            for i in range(10): #Tries com 10 times
+                if player == 'P1':
+                    try:
+                        P2_height = int(radio.recieve())
+                        if height == P2_height:
+                                radio.send('Draw')
+                                result = 'Draw'
+                        elif height > P2_height:
+                                radio.send('Lost')
+                                result = 'Won'
+                        elif height < P2_height:
+                                radio.send('Won')
+                                result = 'Lost'
+                    except:
+                        k = 1
+                    print('P1',result)
+                
+                if player == 'P2':
+                    radio.send(str(height))
+                    try:
+                        host_message = radio.recieve()
+                    except:
+                        k = 1
+                    print('P2',host_message)
+
+            if host_message != '' or result != '':
+                state = 'end'
+
         if state == 'end':
+            display.clear()
+            if player == 'P1':
+                display.scroll(result)
+            
+            if player == 'P2':
+                display.scroll(host_message)
+
+
+            '''
             if player == 'P1':
                 try:
                     message = int(radio.receive())
                     if height == message:
-                        display.scroll('Draw')
+                        display.scroll('Draw', wait=False)
                         radio.send('Draw')
                     elif height > message:
-                        display.scroll('Won')
+                        display.scroll('Won', wait=False)
                         radio.send('Lost')
                     elif height < message:
-                        display.scroll('Lost')
+                        display.scroll('Lost', wait=False)
                         radio.send('Won')
                 except:
-                    display.scroll('wait..')
+                    display.scroll('wait..', wait=False)
 
             if player == 'P2':
                 radio.send(str(height))
@@ -140,8 +190,9 @@ def towerGame(display, button_a, button_b):
                     message = radio.receive()
                     display.scroll(message)
                 except:
-                    display.scroll('wait..')
-
+                    display.scroll('wait..', wait=False)
+            '''
+            
             '''
             radio.send(str(height))
             #--Radio--#
