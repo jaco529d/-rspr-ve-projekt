@@ -131,6 +131,8 @@ def towerGame(display, button_a, button_b):
                                '99999:'
                                '99999'))
             
+            #radio.receive_bytes_info(buffer)??? se https://python.microbit.org/v/3/api/radio
+
             for i in range(10): #Tries com 10 times
                 if player == 'P1':
                     try:

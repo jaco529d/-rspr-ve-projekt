@@ -1,6 +1,7 @@
 from microbit import *
 import radio
 from tower import *
+from test import *
 
 radio.config(group=111)
 radio.on()
@@ -28,6 +29,30 @@ while True:
         towerGame(display, button_a, button_b)
     if button_b.was_pressed():
         display.clear()
+
+    display.scroll('t')
+    if button_a.was_pressed():
+        display.show(Image('99999:'
+                           '99999:'
+                           '99999:'
+                           '99999:'
+                           '99999'))
+        
+        sleep(1000)
+
+        Test()
+    
+    display.scroll('d')
+    if button_a.was_pressed():
+        display.show(Image('99999:'
+                           '99999:'
+                           '99999:'
+                           '99999:'
+                           '99999'))
+        
+        sleep(1000)
+
+        TestDebug()
         
     
 
